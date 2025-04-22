@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Fecha Favorita</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa, #f5c6ec);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      overflow: hidden;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.25);
+      padding: 2rem;
+      border-radius: 1.5rem;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 12px 30px rgba(255, 105, 180, 0.3);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      transition: transform 0.3s ease;
+      position: relative;
+      z-index: 10;
+    }
+
+    .container:hover {
+      transform: translateY(-6px);
+    }
+
+    h1 {
+      color: #d63384;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      transition: all 0.3s ease;
+    }
+
+    input[type="date"] {
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 280px;
+      transition: box-shadow 0.3s ease;
+      outline: none;
+    }
+
+    input[type="date"]:hover {
+      box-shadow: 0 0 10px rgba(214, 51, 132, 0.5);
+    }
+
+    .fecha-mostrada {
+      font-size: 1.2rem;
+      color: #d63384;
+      margin: 1rem 0;
+      padding: 0.5rem;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ff99cc, #ff66b2);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      position: relative;
+      transition: box-shadow 0.3s ease;
+    }
+    
+    button:hover {
+      box-shadow: 0 0 12px #ff99cc;
+    }
+    
+    .rotate-animation {
+      animation: rotateBtn 1.2s ease;
+    }
+
+    .card {
+      margin-top: 1rem;
+      padding: 2rem;
+      background: #fff0f5;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .mensaje-amor {
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.8rem;
+      color: #d63384;
+      margin-bottom: 1rem;
+    }
+
+    .heart {
+      font-size: 4rem;
+      color: #e91e63;
+      animation: pulse 1s infinite;
+      margin: 0.5rem 0;
+    }
+
+    .mi-fecha {
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.8rem;
+      color: #d63384;
+      animation: fadeIn 1s ease;
+      margin-top: 0.5rem;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes rotateBtn {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(90deg); }
+      50% { transform: rotate(180deg); }
+      75% { transform: rotate(270deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .mensaje-amor {
+        font-size: 1.5rem;
+      }
+
+      .heart {
+        font-size: 3rem;
+      }
+
+      .container {
+        padding: 1.5rem;
+      }
+
+      .mi-fecha {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="formulario">
+      <h1 id="titulo">Ingresa la fecha 💌</h1>
+      <input type="date" id="fechaInput" />
+      <br />
+      <button id="miBoton">Entrar</button>
+    </div>
+
+    <div id="resultado" style="display: none;">
+      <div class="fecha-mostrada" id="fechaMostrada"></div>
+      <div class="mi-fecha">Mi fecha favorita ✨</div>
+      <div class="card">
+        <div class="mensaje-amor">Te amo con todo mi corazón</div>
+        <div class="heart">❤️</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const boton = document.getElementById("miBoton");
+    const fechaInput = document.getElementById("fechaInput");
+    const formulario = document.getElementById("formulario");
+    const resultado = document.getElementById("resultado");
+    const fechaMostrada = document.getElementById("fechaMostrada");
+    
+    // Función para los fuegos artificiales de corazones
+    function heartConfetti() {
+      const end = Date.now() + 10000; // 10 segundos
+      const colors = ['#ff0000', '#ff1493', '#ff69b4', '#ffc0cb'];
+      
+      function frame() {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: colors,
+          shapes: ['heart']
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: colors,
+          shapes: ['heart']
+        });
+        
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      }
+      frame();
+    }
+    
+    boton.addEventListener('click', function() {
+      boton.classList.add("rotate-animation");
+      boton.disabled = true;
+      
+      boton.addEventListener("animationend", function() {
+        const input = fechaInput.value;
+        const fechaCorrecta = "2023-01-07";
+
+        if (input === fechaCorrecta) {
+          const fecha = new Date(input);
+          fecha.setDate(fecha.getDate() + 1);
+          const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+          fechaMostrada.textContent = fecha.toLocaleDateString('es-ES', opciones);
+          
+          formulario.style.display = "none";
+          resultado.style.display = "block";
+          
+          // Activar fuegos artificiales
+          heartConfetti();
+          
+          // Restaurar fondo después de 10 segundos
+          setTimeout(() => {
+            document.body.style.background = "linear-gradient(135deg, #f5f7fa, #f5c6ec)";
+          }, 10000);
+          
+        } else {
+          alert("Fecha incorrecta 💔");
+          boton.classList.remove("rotate-animation");
+          boton.disabled = false;
+        }
+      }, {once: true});
+    });
+
+    fechaInput.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        boton.click();
+      }
+    });
+  </script>
+</body>
+</html>
